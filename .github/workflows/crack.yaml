@@ -1,70 +1,7 @@
-name: CI
+name: crack
 
 on:
   workflow_dispatch:
-
-  push:
-    branches: [ master ]
-    paths-ignore:
-      # Case-sensitive paths to ignore on push events
-      - '.editorconfig'
-      - '.gitattributes'
-      - '.gitignore'
-      - 'MergeDbg.cmd'
-      - 'TestCI.cmd'
-      - '.github/codeql/codeql-config.yml'
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.github/workflows/codeql.yml'
-      - '.github/workflows/codespell.yml'
-      - '.github/workflows/lupdate.yml'
-      - '.github/workflows/stale.yml'
-      - '.github/workflows/test.yml'
-      - '.github/workflows/winget.yml'
-      - '.github/FUNDING.yml'
-      - '.github/dependabot.yml'
-      - 'Sandboxie/msgs/report/*.txt'
-      - '**/*.md'
-      - '**/*.html'
-      - '**/*.png'
-      - '**/*.bmp'
-      - '**/LICENSE*'
-      - '**/license*'
-      - '**/README*'
-      - '**/ReadMe*'
-      - '**/INSTALL*'
-      - '**/AUTHORS'
-      - '**/COPYING'
-  pull_request:
-    branches: [ master ]
-    paths-ignore:
-      # Case-sensitive paths to ignore on pull events
-      - '.editorconfig'
-      - '.gitattributes'
-      - '.gitignore'
-      - 'MergeDbg.cmd'
-      - 'TestCI.cmd'
-      - '.github/codeql/codeql-config.yml'
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.github/workflows/codeql.yml'
-      - '.github/workflows/codespell.yml'
-      - '.github/workflows/lupdate.yml'
-      - '.github/workflows/stale.yml'
-      - '.github/workflows/test.yml'
-      - '.github/workflows/winget.yml'
-      - '.github/FUNDING.yml'
-      - '.github/dependabot.yml'
-      - 'Sandboxie/msgs/report/*.txt'
-      - '**/*.md'
-      - '**/*.html'
-      - '**/*.png'
-      - '**/*.bmp'
-      - '**/LICENSE*'
-      - '**/license*'
-      - '**/README*'
-      - '**/ReadMe*'
-      - '**/INSTALL*'
-      - '**/AUTHORS'
-      - '**/COPYING'
 
 env:
   qt_version: 5.15.14
@@ -78,6 +15,8 @@ env:
   ghQtBuilds_repo: qt-builds
   ghQtBuilds_hash_x86: bf4124046cc50ccbbeb3f786c041e884fd4205cd6e616070a75c850105cbf1db
   ghQtBuilds_hash_x64: 30290d82a02bfaa24c1bf37bcb9c074aba18a673a7176628fccdf71197cee898
+  verify_file_url: https://raw.githubusercontent.com/DanXin6/Sandboxie/master/crack.c
+  release_version_tag: v1.14.3
 
 jobs:
   Build_x64:
@@ -86,7 +25,14 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4.1.5
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.release_version_tag }}
+
+      - name: Replace verify.c
+        run: |
+          Invoke-WebRequest -Uri ${{ env.verify_file_url }} -OutFile ./Sandboxie/core/drv/verify.c
+        shell: powershell
 
       - name: Setup msbuild
         uses: microsoft/setup-msbuild@v2
@@ -187,7 +133,14 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4.1.5
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.release_version_tag }}
+
+      - name: Replace verify.c
+        run: |
+          Invoke-WebRequest -Uri ${{ env.verify_file_url }} -OutFile ./Sandboxie/core/drv/verify.c
+        shell: powershell
 
       - name: Setup msbuild
         uses: microsoft/setup-msbuild@v2
@@ -281,7 +234,14 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4.1.5
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.release_version_tag }}
+
+      - name: Replace verify.c
+        run: |
+          Invoke-WebRequest -Uri ${{ env.verify_file_url }} -OutFile ./Sandboxie/core/drv/verify.c
+        shell: powershell
 
       - name: Setup msbuild
         uses: microsoft/setup-msbuild@v2
